@@ -38,3 +38,23 @@
   (cube-iter 1.0 x))
 
 (cube (cube-root 9))
+
+;; square root – lexical scoped
+(defn lex-sqrt [x]
+
+  (letfn [(improve [guess]
+            (avg guess (/ x guess)))
+
+          (good-enough? [prev-guess current-guess]
+            (< (Math/abs (- current-guess prev-guess)) err))
+
+          (sqrt-iter [guess]
+            (let [next-guess (improve guess)]
+              (if (good-enough? guess next-guess)
+                guess
+                (recur next-guess))))]
+
+    (sqrt-iter 1.0)))
+
+(lex-sqrt 16)
+
