@@ -14,3 +14,4 @@ target/
 .cpcache/
 .clj-kondo/
 .lsp/
+.calva/
