@@ -14,7 +14,6 @@
     x
     (ident (sin (/ x 3.0)))))
 
-
 ;; tests
 
 (deftest sin-test

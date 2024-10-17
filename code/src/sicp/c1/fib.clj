@@ -17,7 +17,6 @@
         (== 1 n) 1
         :else (+ (fib (- n 1)) (fib (- n 2)))))
 
-
 ;; iterative fib
 (defn ifib [n]
   (letfn [(iter-fib [a b count]
@@ -25,7 +24,6 @@
               b
               (iter-fib (+ a b) a (inc count))))]
     (iter-fib 1 0 0)))
-
 
 (map fib (range 0 9))
 (map ifib (range 0 9))

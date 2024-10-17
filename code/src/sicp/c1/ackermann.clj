@@ -6,7 +6,6 @@
         (== 1 y) 2
         :else (recur (dec x) (a x (dec y)))))
 
-
 (a 1 10)
 (a 2 4)
 (a 3 3)

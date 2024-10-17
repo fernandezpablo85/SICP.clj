@@ -81,7 +81,6 @@
 
 (defn runtime [] (long (/ (System/nanoTime) 1000)))
 
-
 (defn report-prime [n elapsed]
   (println " *** ")
   (println n)

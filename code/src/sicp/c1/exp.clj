@@ -26,7 +26,6 @@
 ;;   Design a procedure that does exponentiation in log(n) 
 ;;   operations and it's iterative (non-recursive).
 
-
 (defn fast-exp-iter [b n]
   (letfn [(iter [b n acc]
             (cond
@@ -34,7 +33,6 @@
               (odd? n) (recur b (dec n) (*' acc b))
               :else (recur (square b) (/ n 2) acc)))]
     (iter b n 1)))
-
 
 ;; Tests
 (deftest exponentiations
@@ -57,7 +55,6 @@
   (cond (== b 0) 0
         (odd? b) (+ a (multiply a (dec b)))
         :else (multiply (twice a) (halve b))))
-
 
 ;; Tests
 (deftest multiplications
