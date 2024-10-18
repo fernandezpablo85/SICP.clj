@@ -105,7 +105,6 @@
       total
       (recur (next a) (combiner (f a) total)))))
 
-
 ;; sum and product
 (accumulate (partial +) 0 identity inc 0 5)
 (accumulate (partial *) 1 identity inc 1 5)
@@ -129,6 +128,57 @@
 (let [n 10
       rel-prime #(= 1 (gcd % n))]
   (filtered-accumulate * 1 rel-prime identity inc 1 (dec n)))
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;; Let vs Lambda ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn square [x] (* x x))
+
+;; original function
+(defn f [x y]
+  (+
+   (* x (square (+ 1 (* x y))))
+   (* y (- y 1))
+   (* (+ 1 (* x y)) (- y 1))))
+
+;; with helper (clojure does not support nested defn)
+
+;; (defn f' [x y]
+;;   (defn helper [a b]
+;;     (+
+;;      (* x (square a))
+;;      (* y b)
+;;      (* a b)))
+;;   (helper (+ 1 (* x y)) (- y 1)))
+
+;; with lambda
+(defn f' [x y]
+  ((fn [a b]
+     (+
+      (* x (square a))
+      (* y b)
+      (* a b))) (+ 1 (* x y)) (- y 1)))
+
+;; with let
+(defn f'' [x y]
+  (let [a (+ 1 (* x y))
+        b (- y 1)]
+    (+
+     (* x (square a))
+     (* y b)
+     (* a b))))
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;; Exercise 1.34 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn fg [g]
+  (g 2))
+
+;; (fg fg)
+;; (fg 2)
+;; (2 2) // err
 
 (deftest all-tests
   (testing "sums"
