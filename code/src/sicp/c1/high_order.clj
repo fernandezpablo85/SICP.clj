@@ -59,12 +59,36 @@
        (even? k) (+ (y 2 k) (simpsons-rule f a b n (inc k)))
        :else (+ (y 4 k) (simpsons-rule f a b n (inc k)))))))
 
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;; Exercise 1.30 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Iterative HoF for sum 
 
 (defn iter-sum [f next a b]
   (loop [a a
          total 0]
     (if (> a b) total (recur (next a) (+ total (f a))))))
 
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;; Exercise 1.31 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Iterative HoF for product
+
+(defn iter-prod [f next a b]
+  (loop [a a
+         total 1]
+    (if (> a b) total (recur (next a) (* total (f a))))))
+
+;; factorial
+(iter-prod identity inc 1 6)
+
+;; pi approximation
+(defn pi-approx-prod [n]
+  (if (== 2 n)
+    (/ n (inc n))
+    (* (/ n (inc n)) (/ n (dec n)))))
 
 (deftest all-tests
   (testing "sums"
@@ -104,8 +128,10 @@
     (is (is-close (float (simpsons-rule cube 0 1 20)) 0.25)))
 
   (testing "iter-sum vs sum"
-    (is (= (iter-sum cube inc 1 10) (sum cube inc 1 10)))))
+    (is (= (iter-sum cube inc 1 10) (sum cube inc 1 10))))
 
+  (testing "pi-approx-prod"
+    (is (is-close (* 4 (float (iter-prod pi-approx-prod (partial + 2) 2 500))) 3.14))))
 
 (run-tests 'sicp.c1.high-order)
 
