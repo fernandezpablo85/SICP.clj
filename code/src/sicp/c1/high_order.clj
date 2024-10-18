@@ -1,5 +1,7 @@
 (ns sicp.c1.high-order
-  (:require [clojure.test :refer [deftest testing run-tests is are]]))
+  (:require [clojure.test :refer [deftest testing run-tests is are]])
+  (:require [sicp.c1.primes :refer [prime?]])
+  (:require [sicp.c1.gcd :refer [gcd]]))
 
 ;; summation
 (defn summation [a b]
@@ -89,6 +91,44 @@
   (if (== 2 n)
     (/ n (inc n))
     (* (/ n (inc n)) (/ n (dec n)))))
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;; Exercise 1.32 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Accumulate HoF
+
+(defn accumulate [combiner null-value f next a b]
+  (loop [a a
+         total null-value]
+    (if (> a b)
+      total
+      (recur (next a) (combiner (f a) total)))))
+
+
+;; sum and product
+(accumulate (partial +) 0 identity inc 0 5)
+(accumulate (partial *) 1 identity inc 1 5)
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;; Exercise 1.33 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Filtered Accumulate HoF
+(defn filtered-accumulate [combiner null-value filter f next a b]
+  (loop [a a
+         total null-value]
+    (if (> a b)
+      total
+      (recur (next a) (if (filter a) (combiner (f a) total) total)))))
+
+;; sum of squares of prime numbers
+(filtered-accumulate (fn [x t] (+ (* x x) t)) 0 prime? identity inc 0 10)
+
+;; product of positive integers < n relatively prime to n
+(let [n 10
+      rel-prime #(= 1 (gcd % n))]
+  (filtered-accumulate * 1 rel-prime identity inc 1 (dec n)))
 
 (deftest all-tests
   (testing "sums"
