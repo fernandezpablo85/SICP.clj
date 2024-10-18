@@ -60,14 +60,11 @@
        :else (+ (y 4 k) (simpsons-rule f a b n (inc k)))))))
 
 
-(defn iter-sum
-  ([f next a b] (iter-sum f next a b 0))
-  ([f next a b total]
-   (if (> a b)
-     total
-     (recur f next (next a) b (+ (f a) total)))))
+(defn iter-sum [f next a b]
+  (loop [a a
+         total 0]
+    (if (> a b) total (recur (next a) (+ total (f a))))))
 
-(iter-sum identity inc 1 10)
 
 (deftest all-tests
   (testing "sums"
