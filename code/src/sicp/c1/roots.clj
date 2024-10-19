@@ -1,5 +1,5 @@
 (ns sicp.c1.roots
-  (:require [clojure.math :refer [log]]))
+  (:require [clojure.math :refer [log tan]]))
 
 (defn is-close? [a b]
   (< (abs (- a b)) 0.001))
@@ -86,14 +86,42 @@
      (/ (n i) (+ (d i) (cont-frac n d k (inc i)))))))
 
 (defn cont-frac-iter
-  ([n d k] (cont-frac n d k 0))
-  ([n d k i]
-   (loop [i i
-          total (/ (n i) (d i))]
-     (if (= i k)
+  ([n d k]
+   (loop [i k
+          total (/ (n k) (d k))]
+     (if (= i 0)
        total
-       (recur (inc i) (/ (n i) (+ (d i) total)))))))
+       (recur (dec i) (/ (n i) (+ (d i) total)))))))
 
 (defn one [_] 1.0)
 (/ 1 (cont-frac one one 11))
 (/ 1 (cont-frac-iter one one 11))
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;; Exercise 1.38 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn eulers-d [i]
+  (if
+   (= (mod i 3) 2)
+    (* (/ (+ i 1) 3) 2)
+    1))
+
+(map eulers-d [1 2 3 4 5 6 6 7 8 9])
+
+(defn eulers-e [n]
+  (cont-frac-iter one eulers-d n))
+
+(eulers-e 50)
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;; Exercise 1.39 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn tan-cf [x k]
+  (letfn [(n [i] (if (= 1 i) x (* x x -1)))
+          (d [i] (- (* 2 i) 1))]
+    (cont-frac-iter n d k)))
+
+(tan 1)
+(float (tan-cf 1 500))
