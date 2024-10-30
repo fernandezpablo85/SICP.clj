@@ -126,7 +126,6 @@
 
 (defn fixed-point [f guess]
   (let [yguess (f guess)]
-    (println "guess")
     (if (is-close? yguess guess)
       guess
       (fixed-point f yguess))))
@@ -142,3 +141,30 @@
   (fixed-point
    ((repeated' avg/avg-damp (log2 n)) #(/ x (times % (dec n))))
    1.0))
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;; Exercise 1.46 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+
+(defn iterative-improvement [good-enough? improve guess]
+  (if (good-enough? guess)
+    guess
+    (iterative-improvement good-enough? improve (improve guess))))
+
+(defn i2-sqrt [x]
+  (iterative-improvement
+   #(is-close? (* % %) x)
+   #(avg/average % (/ x %))
+   1.0))
+
+(i2-sqrt 16)
+
+(defn i2-fixed-point [f]
+  (iterative-improvement
+   #(is-close? (f %) %)
+   (avg/avg-damp f)
+   1.0))
+
+(i2-fixed-point #(/ 64 %))
